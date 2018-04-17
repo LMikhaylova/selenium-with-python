@@ -9,11 +9,13 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 class PythonMapTests(unittest.TestCase):
 
+    #
     def setUp(self):        
-        self.driver = webdriver.Chrome() #selecting Chrome driver
+        #self.driver = webdriver.Chrome() 
+        self.driver = webdriver.Firefox()
         self.actions = ActionChains(self.driver)
-        self.driver.implicitly_wait(3) #setting wait time for actions to complete
-        self.driver.get("https://www.openstreetmap.org") #navigate to the page
+        self.driver.implicitly_wait(3) 
+        self.driver.get("https://www.openstreetmap.org") 
 
 
     #function returning search input field
@@ -41,9 +43,18 @@ class PythonMapTests(unittest.TestCase):
         elem = self.getSearchResultsElement()
 
         self.assertNotEqual(elem.text, "No results found")
-        #self.assertEqual(elem.text, "Building John Hancock Tower, Trinity Place, Chinatown, Back Bay, \
-        #Boston, Suffolk County, Massachusetts, 02114, United States of America")
 
+        self.assertTrue(elem.text.find("Hancock Tower"))
+        
+        urlParts = driver.current_url.split("#map=")
+        zoom_lat_lon = urlParts[1].split("/")
+        zoom = int(zoom_lat_lon[0])
+        lat = int(float(zoom_lat_lon[1]))
+        lon = int(float(zoom_lat_lon[2]))
+
+        self.assertEqual(zoom, 19)
+        self.assertEqual(lat, 42)
+        self.assertEqual(lon, -71)
 
         divMap = driver.find_element(By.ID, "map")
 
@@ -55,18 +66,7 @@ class PythonMapTests(unittest.TestCase):
         
         actions.move_to_element(divMap).click().perform()
 
-        time.sleep(5)
         
-
-        urlParts = driver.current_url.split("#map=")
-        zoom_lat_lon = urlParts[1].split("/")
-        zoom = int(zoom_lat_lon[0])
-        lat = int(float(zoom_lat_lon[1]))
-        lon = int(float(zoom_lat_lon[2]))
-
-        self.assertEqual(zoom, 19)
-        self.assertEqual(lat, 42)
-        self.assertEqual(lon, -71)
 
     def test_search_negative(self):
         driver = self.driver               
