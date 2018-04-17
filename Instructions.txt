@@ -1,0 +1,5 @@
+Instructions
+Add Python support in VS Code
+Install Python
+Install Selenium for Python
+Download Chromedriver and make sure it is in path
